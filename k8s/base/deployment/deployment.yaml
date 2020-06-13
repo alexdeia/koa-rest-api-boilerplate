@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: __APP_NAME__
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    spec:
+      containers:
+      - image: __SET_IMAGE__
+        imagePullPolicy: Always
+        name: __APP_NAME__
+        envFrom:
+        - configMapRef:
+            name: __APP_NAME__-env
+        resources:
+          limits:
+            cpu: 300m
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+        ports:
+        - name: "app"
+          containerPort: 3000
+          protocol: "TCP"
+        readinessProbe:
+          httpGet:
+            path: /api
+            port: app
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /api
+            port: app
+          initialDelaySeconds: 15
+          periodSeconds: 20

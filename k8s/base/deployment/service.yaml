@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: __APP_NAME__
+spec:
+  ports:
+  - name: app
+    port: __APP_PORT__
+    protocol: TCP
+    targetPort: app
+  type: ClusterIP
+  externalIPs:
+  - "$(ConfigMap.__APP_NAME__-env.data.EXTERNAL_IP)"
